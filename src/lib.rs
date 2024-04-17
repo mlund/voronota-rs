@@ -8,8 +8,6 @@
 //! but the main increase in speed comes when utilizing a simpler, radical tessellation variant, also known as
 //! Laguerre-Laguerre tessellation or power diagram. This is the default tessellation variant in Voronota-LT.
 //! It considers radii of atoms together with the rolling probe radius to define radical planes as bisectors between atoms.
-//!
-//! For more information, see <https://www.voronota.com>
 //! 
 //! # Example
 //! 
@@ -35,6 +33,12 @@ extern crate approx;
 
 #[cxx::bridge]
 mod ffi {
+    #[derive(Debug, Default, PartialEq, Clone)]
+    struct Point {
+        x: f64,
+        y: f64,
+        z: f64,
+    }
     /// Ball with a position (x, y, z) and a radius r.
     #[derive(Debug, Default, PartialEq, Clone)]
     struct Ball {
@@ -110,9 +114,42 @@ impl RadicalTessellation {
     pub fn from_balls(probe_radius: f64, balls: &Vec<Ball>) -> Self {
         ffi::from_balls(probe_radius, balls)
     }
+
+    /// Clear all balls, contacts and cells.
+    pub fn clear(&mut self) {
+        self.balls.clear();
+        self.contacts.clear();
+        self.cells.clear();
+    }
+
+    /// True if there are no balls.
+    pub fn is_empty(&self) -> bool {
+        self.balls.is_empty()
+    }
 }
 
-pub use ffi::{Ball, Cell, Contact, RadicalTessellation};
+pub use ffi::{Ball, Cell, Contact, RadicalTessellation, Point};
+
+impl From<[f64; 3]> for Point {
+    fn from(data: [f64; 3]) -> Self {
+        Point {
+            x: data[0],
+            y: data[1],
+            z: data[2],
+        }
+    }
+}
+
+impl From<[f64; 4]> for Ball {
+    fn from(data: [f64; 4]) -> Self {
+        Ball {
+            x: data[0],
+            y: data[1],
+            z: data[2],
+            r: data[3],
+        }
+    }
+}
 
 #[cfg(test)]
 mod tests {

@@ -1,5 +1,4 @@
-#ifndef VORONOTALT_H_
-#define VORONOTALT_H_
+#pragma once
 
 #include <stdexcept>
 #include "rust/cxx.h"
@@ -105,5 +104,3 @@ struct RadicalTessellation
 		return static_cast<int>(contacts.size());
 	}
 };
-
-#endif /* VORONOTALT_H_ */
