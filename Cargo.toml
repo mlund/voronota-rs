@@ -2,11 +2,12 @@
 name = "voronota-rs"
 version = "0.1.0"
 edition = "2021"
-description = "Voronota-LT is a tool for finding the vertices of the Voronoi diagram of balls"
+description = "Voronota is a tool for finding the vertices of the Voronoi diagram of balls"
 license = "MIT"
 readme = "README.md"
 categories = ["science"]
 homepage = "https://www.voronota.com"
+repository = "https://github.com/mlund/voronota-rs"
 authors = ["Kliment Olechnovic <kliment.olechnovic@bti.vu.lt>", "Mikael Lund <lyssky@icloud.com>"]
 keywords = ["voronoi-tessellation", "triangulation", "protein", "bioinformatics"]
 
