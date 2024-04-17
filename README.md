@@ -1,3 +1,5 @@
+[![Rust](https://github.com/mlund/voronota-rs/actions/workflows/rust.yml/badge.svg)](https://github.com/mlund/voronota-rs/actions/workflows/rust.yml)
+
 # Voronota-LT
 
 Voronota-LT (pronounced ‘voronota lite’) is an alternative version of Voronota for constructing tessellation-derived atomic contact areas and volumes. Voronota-LT was written from scratch and does not use any external code, even from the core Voronota. The primary motivation for creating Voronota-LT was drastically increasing the speed of computing tessellation-based atom-atom contact areas and atom solvent-accessible surface areas.
