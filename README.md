@@ -2,8 +2,6 @@
 [![Crates.io](https://img.shields.io/crates/v/voronota)](https://crates.io/crates/voronota)
 [![docs.rs](https://img.shields.io/docsrs/voronota)](https://docs.rs/voronota/latest/voronota)
 
-https://docs.rs/voronota/0.1.0/voronota/
-
 # Voronota-LT
 
 [Voronota-LT](https://www.voronota.com/expansion_lt) (pronounced ‘voronota lite’) is an alternative version of Voronota for constructing tessellation-derived atomic contact areas and volumes. Voronota-LT was written from scratch and does not use any external code, even from the core Voronota. The primary motivation for creating Voronota-LT was drastically increasing the speed of computing tessellation-based atom-atom contact areas and atom solvent-accessible surface areas.
