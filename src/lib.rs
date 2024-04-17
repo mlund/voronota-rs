@@ -8,21 +8,21 @@
 //! but the main increase in speed comes when utilizing a simpler, radical tessellation variant, also known as
 //! Laguerre-Laguerre tessellation or power diagram. This is the default tessellation variant in Voronota-LT.
 //! It considers radii of atoms together with the rolling probe radius to define radical planes as bisectors between atoms.
-//! 
+//!
 //! # Example
-//! 
+//!
 //! ~~~ rust
 //! use voronota::{Ball, RadicalTessellation};
 //! let balls = vec![
 //!     Ball { x: 0.0, y: 0.0, z: 0.0, r: 2.0 },
 //!     Ball { x: 1.0, y: 0.0, z: 0.0, r: 2.0 },
 //! ];
-//! let tessellation = RadicalTessellation::from_balls(1.4, &balls);
-//! 
+//! let tessellation = RadicalTessellation::from_balls(1.4, &balls, None);
+//!
 //! assert_eq!(tessellation.balls.len(), 2);
 //! assert_eq!(tessellation.contacts.len(), 1);
 //! assert_eq!(tessellation.cells.len(), 2);
-//! 
+//!
 //! let total_area: f64 = tessellation.cells.iter().map(|c| c.sas_area).sum();
 //! assert_eq!(total_area, 166.6300743464026);
 //! ~~~
@@ -33,6 +33,7 @@ extern crate approx;
 
 #[cxx::bridge]
 mod ffi {
+    /// Simple point with x, y and z coordinates.
     #[derive(Debug, Default, PartialEq, Clone)]
     struct SimplePoint {
         x: f64,
@@ -92,11 +93,22 @@ mod ffi {
     unsafe extern "C++" {
         include!("voronota/src/interface.h");
         fn from_balls(probe_radius: f64, balls: &Vec<Ball>) -> RadicalTessellation;
+        fn from_balls_pbc(
+            probe_radius: f64,
+            balls: &Vec<Ball>,
+            periodic_box_corners: &Vec<SimplePoint>,
+        ) -> RadicalTessellation;
     }
 }
 
 impl RadicalTessellation {
     /// Construct tessellation from a list of balls and a probe radius.
+    ///
+    /// # Arguments:
+    ///
+    /// * `probe_radius` - Probe radius
+    /// * `balls` - List of balls with position and radii information
+    /// * `periodic_box_corners` - Optional cuboidal box corners if periodic boundary conditions
     ///
     /// # Examples:
     /// ~~~
@@ -105,7 +117,7 @@ impl RadicalTessellation {
     ///    Ball { x: 0.0, y: 0.0, z: 0.0, r: 2.0 },
     ///    Ball { x: 1.0, y: 0.0, z: 0.0, r: 2.0 },
     /// ];
-    /// let tessellation = RadicalTessellation::from_balls(1.4, &balls);
+    /// let tessellation = RadicalTessellation::from_balls(1.4, &balls, None);
     /// let total_area: f64 = tessellation.cells.iter().map(|c| c.sas_area).sum();
     ///
     /// assert_eq!(tessellation.balls.len(), 2);
@@ -113,8 +125,24 @@ impl RadicalTessellation {
     /// assert_eq!(tessellation.cells.len(), 2);
     /// assert_eq!(total_area, 166.6300743464026);
     /// ~~~
-    pub fn from_balls(probe_radius: f64, balls: &Vec<Ball>) -> Self {
-        ffi::from_balls(probe_radius, balls)
+    pub fn from_balls(
+        probe_radius: f64,
+        balls: &Vec<Ball>,
+        periodic_box_corners: Option<[SimplePoint; 2]>,
+    ) -> Self {
+        match periodic_box_corners {
+            Some(corners) => {
+                assert!(corners[0].x < corners[1].x);
+                assert!(corners[0].y < corners[1].y);
+                assert!(corners[0].z < corners[1].z);
+                ffi::from_balls_pbc(
+                    probe_radius,
+                    balls,
+                    &vec![corners[0].clone(), corners[1].clone()],
+                )
+            }
+            None => ffi::from_balls(probe_radius, balls),
+        }
     }
 
     /// Clear all balls, contacts and cells.
@@ -173,16 +201,32 @@ mod tests {
                 r: 2.0,
             },
         ];
-        let tessellation = RadicalTessellation::from_balls(1.4, &balls);
+        let tessellation = RadicalTessellation::from_balls(1.4, &balls, None);
         assert_eq!(tessellation.balls.len(), 2);
         assert_eq!(tessellation.contacts.len(), 1);
         assert_eq!(tessellation.cells.len(), 2);
-        approx::assert_relative_eq!(tessellation.cells[0].sas_area, 83.31503717320129, epsilon = 1e-6);
-        approx::assert_relative_eq!(tessellation.cells[0].volume, 100.34561094831156, epsilon = 1e-6);
+        approx::assert_relative_eq!(
+            tessellation.cells[0].sas_area,
+            83.31503717320129,
+            epsilon = 1e-6
+        );
+        approx::assert_relative_eq!(
+            tessellation.cells[0].volume,
+            100.34561094831156,
+            epsilon = 1e-6
+        );
         assert!(tessellation.cells[0].included);
         assert_eq!(tessellation.contacts[0].index_a, 0);
         assert_eq!(tessellation.contacts[0].index_b, 1);
-        approx::assert_relative_eq!(tessellation.contacts[0].area, 35.53141291210056, epsilon = 1e-6);
-        approx::assert_relative_eq!(tessellation.contacts[0].arc_length, 21.130567978766745, epsilon = 1e-6);
+        approx::assert_relative_eq!(
+            tessellation.contacts[0].area,
+            35.53141291210056,
+            epsilon = 1e-6
+        );
+        approx::assert_relative_eq!(
+            tessellation.contacts[0].arc_length,
+            21.130567978766745,
+            epsilon = 1e-6
+        );
     }
 }
