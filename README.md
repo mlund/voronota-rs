@@ -1,4 +1,8 @@
 [![Rust](https://github.com/mlund/voronota-rs/actions/workflows/rust.yml/badge.svg)](https://github.com/mlund/voronota-rs/actions/workflows/rust.yml)
+[![Crates.io](https://img.shields.io/crates/v/voronota)](https://crates.io/crates/voronota)
+[![docs.rs](https://img.shields.io/docsrs/voronota)](https://docs.rs/voronota/latest/voronota)
+
+https://docs.rs/voronota/0.1.0/voronota/
 
 # Voronota-LT
 

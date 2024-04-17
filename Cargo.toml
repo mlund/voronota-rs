@@ -1,6 +1,6 @@
 [package]
 name = "voronota"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 description = "Voronota-LT is an alternative version of Voronota for constructing tessellation-derived atomic contact areas and volumes."
 license = "MIT"
@@ -9,7 +9,7 @@ categories = ["science"]
 homepage = "https://www.voronota.com/expansion_lt"
 repository = "https://github.com/mlund/voronota-rs"
 authors = ["Kliment Olechnovic <kliment.olechnovic@bti.vu.lt>", "Mikael Lund <lyssky@icloud.com>"]
-keywords = ["voronoi-tessellation", "triangulation", "bioinformatics"]
+keywords = ["voronoi-tessellation", "surface area", "bioinformatics"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
