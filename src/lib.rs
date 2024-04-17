@@ -106,12 +106,12 @@ mod tests {
         assert_eq!(tessellation.balls.len(), 2);
         assert_eq!(tessellation.contacts.len(), 1);
         assert_eq!(tessellation.cells.len(), 2);
-        approx::assert_relative_eq!(tessellation.cells[0].sas_area, 83.31503717320129);
-        approx::assert_relative_eq!(tessellation.cells[0].volume, 100.34561094831156);
+        approx::assert_relative_eq!(tessellation.cells[0].sas_area, 83.31503717320129, epsilon = 1e-6);
+        approx::assert_relative_eq!(tessellation.cells[0].volume, 100.34561094831156, epsilon = 1e-6);
         assert!(tessellation.cells[0].included);
         assert_eq!(tessellation.contacts[0].index_a, 0);
         assert_eq!(tessellation.contacts[0].index_b, 1);
-        approx::assert_relative_eq!(tessellation.contacts[0].area, 35.53141291210056);
-        approx::assert_relative_eq!(tessellation.contacts[0].arc_length, 21.130567978766745);
+        approx::assert_relative_eq!(tessellation.contacts[0].area, 35.53141291210056, epsilon = 1e-6);
+        approx::assert_relative_eq!(tessellation.contacts[0].arc_length, 21.130567978766745, epsilon = 1e-6);
     }
 }

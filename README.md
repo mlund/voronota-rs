@@ -14,7 +14,7 @@ This crate provides a simplified interface to Voronota-LT and can added to exist
 cargo add voronota
 ~~~
 
-The following illustrates basic use and how e.g. the solvent accessible surface area can be obtained:
+The following illustrates basic use and how to e.g. extract the solvent accessible surface area:
 
 ~~~ rust
 use voronota::{Ball, RadicalTessellation};
