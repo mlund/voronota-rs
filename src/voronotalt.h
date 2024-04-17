@@ -3,7 +3,21 @@
 #include <stdexcept>
 #include "rust/cxx.h"
 #include "voronota/src/voronotalt/voronotalt.h"
-#include <iostream>
+
+struct SimplePoint
+{
+	SimplePoint() : x(0.0), y(0.0), z(0.0)
+	{
+	}
+
+	SimplePoint(double x, double y, double z) : x(x), y(y), z(z)
+	{
+	}
+
+	double x;
+	double y;
+	double z;
+};
 
 struct Ball
 {
@@ -47,6 +61,7 @@ struct Cell
 struct RadicalTessellation
 {
 	double probe;
+	rust::Vec<SimplePoint> periodic_box_corners;
 	rust::Vec<Ball> balls;
 	rust::Vec<Contact> contacts;
 	rust::Vec<Cell> cells;
@@ -55,7 +70,7 @@ struct RadicalTessellation
 	{
 	}
 
-	RadicalTessellation(const rust::Vec<Ball>& balls, double probe) : probe(probe), balls(balls)
+	RadicalTessellation(const rust::Vec<Ball>& balls, const rust::Vec<SimplePoint>& periodic_box_corners, double probe) : probe(probe), periodic_box_corners(periodic_box_corners), balls(balls)
 	{
 		recompute(probe);
 	}
@@ -72,7 +87,20 @@ struct RadicalTessellation
 		}
 
 		voronotalt::RadicalTessellation::Result result;
-		voronotalt::RadicalTessellation::construct_full_tessellation(voronotalt::get_spheres_from_balls(balls, probe), result);
+		if (periodic_box_corners.empty()) {
+			voronotalt::RadicalTessellation::construct_full_tessellation(voronotalt::get_spheres_from_balls(balls, probe), result);
+		} else {
+			if (periodic_box_corners.size() != 2) {
+				throw std::runtime_error("Invalid periodic box corners");
+			}
+			std::vector<voronotalt::SimplePoint> corners(2);
+			for (std::size_t i = 0; i < 2; i++) {
+				corners[i].x = periodic_box_corners[i].x;
+				corners[i].y = periodic_box_corners[i].y;
+				corners[i].z = periodic_box_corners[i].z;
+			}
+			voronotalt::RadicalTessellation::construct_full_tessellation(voronotalt::get_spheres_from_balls(balls, probe), corners, result);
+		}
 
 		if(result.contacts_summaries.empty() || result.cells_summaries.empty())
 		{

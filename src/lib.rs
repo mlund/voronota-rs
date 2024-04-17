@@ -34,7 +34,7 @@ extern crate approx;
 #[cxx::bridge]
 mod ffi {
     #[derive(Debug, Default, PartialEq, Clone)]
-    struct Point {
+    struct SimplePoint {
         x: f64,
         y: f64,
         z: f64,
@@ -79,6 +79,8 @@ mod ffi {
     struct RadicalTessellation {
         /// Probe radius
         probe: f64,
+        /// Periodic box corners
+        periodic_box_corners: Vec<SimplePoint>,
         /// List of registered balls (positions and radii)
         balls: Vec<Ball>,
         /// List of contacts between balls
@@ -128,11 +130,11 @@ impl RadicalTessellation {
     }
 }
 
-pub use ffi::{Ball, Cell, Contact, RadicalTessellation, Point};
+pub use ffi::{Ball, Cell, Contact, RadicalTessellation, SimplePoint};
 
-impl From<[f64; 3]> for Point {
+impl From<[f64; 3]> for SimplePoint {
     fn from(data: [f64; 3]) -> Self {
-        Point {
+        SimplePoint {
             x: data[0],
             y: data[1],
             z: data[2],
