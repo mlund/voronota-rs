@@ -1,0 +1,22 @@
+[package]
+name = "voronota-rs"
+version = "0.1.0"
+edition = "2021"
+description = "Voronota-LT is a tool for finding the vertices of the Voronoi diagram of balls"
+license = "MIT"
+readme = "README.md"
+categories = ["science"]
+homepage = "https://www.voronota.com"
+authors = ["Kliment Olechnovic <kliment.olechnovic@bti.vu.lt>", "Mikael Lund <lyssky@icloud.com>"]
+keywords = ["voronoi-tessellation", "triangulation", "protein", "bioinformatics"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+cxx = "1.0"
+
+[dev-dependencies]
+approx = "0.5"
+
+[build-dependencies]
+cxx-build = "1.0"
