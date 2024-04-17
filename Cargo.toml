@@ -1,5 +1,5 @@
 [package]
-name = "voronota-rs"
+name = "voronota"
 version = "0.1.0"
 edition = "2021"
 description = "Voronota is a tool for finding the vertices of the Voronoi diagram of balls"

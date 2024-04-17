@@ -13,13 +13,13 @@ For more information, see <https://www.voronota.com>
 This crate provides a simplified interface to Voronota-LT and can added to existing Cargo-based projects with:
 
 ~~~ console
-cargo add voronota-rs
+cargo add voronota
 ~~~
 
 The following illustrates basic use and how to e.g. extract the solvent accessible surface area:
 
 ~~~ rust
-use voronota_rs::{Ball, RadicalTessellation};
+use voronota::{Ball, RadicalTessellation};
 let balls = vec![
     Ball { x: 0.0, y: 0.0, z: 0.0, r: 2.0 },
     Ball { x: 1.0, y: 0.0, z: 0.0, r: 2.0 },

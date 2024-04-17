@@ -3,7 +3,7 @@
 
 #include <stdexcept>
 #include "rust/cxx.h"
-#include "voronota-rs/src/voronotalt/voronotalt.h"
+#include "voronota/src/voronotalt/voronotalt.h"
 #include <iostream>
 
 struct Ball

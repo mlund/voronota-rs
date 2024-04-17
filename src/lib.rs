@@ -14,7 +14,7 @@
 //! # Example
 //! 
 //! ~~~ rust
-//! use voronota_rs::{Ball, RadicalTessellation};
+//! use voronota::{Ball, RadicalTessellation};
 //! let balls = vec![
 //!     Ball { x: 0.0, y: 0.0, z: 0.0, r: 2.0 },
 //!     Ball { x: 1.0, y: 0.0, z: 0.0, r: 2.0 },
@@ -84,7 +84,7 @@ mod ffi {
     }
 
     unsafe extern "C++" {
-        include!("voronota-rs/src/interface.h");
+        include!("voronota/src/interface.h");
         fn from_balls(probe_radius: f64, balls: &Vec<Ball>) -> RadicalTessellation;
     }
 }
@@ -94,7 +94,7 @@ impl RadicalTessellation {
     ///
     /// # Examples:
     /// ~~~
-    /// use voronota_rs::{Ball, RadicalTessellation};
+    /// use voronota::{Ball, RadicalTessellation};
     /// let balls = vec![
     ///    Ball { x: 0.0, y: 0.0, z: 0.0, r: 2.0 },
     ///    Ball { x: 1.0, y: 0.0, z: 0.0, r: 2.0 },
