@@ -2,7 +2,9 @@ fn main() {
     cxx_build::bridge("src/lib.rs")
         .file("src/interface.cc")
         .std("c++17")
-        .compile("voronota-rs");
+        .flag("-Wall")
+        .flag("-Wno-dollar-in-identifier-extension")
+        .compile("voronota");
 
     println!("cargo:rerun-if-changed=src/lib.rs");
     println!("cargo:rerun-if-changed=src/interface.cc");
