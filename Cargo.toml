@@ -9,7 +9,7 @@ categories = ["science"]
 homepage = "https://www.voronota.com/expansion_lt"
 repository = "https://github.com/mlund/voronota-rs"
 authors = ["Kliment Olechnovic <kliment.olechnovic@bti.vu.lt>", "Mikael Lund <lyssky@icloud.com>"]
-keywords = ["voronoi-tessellation", "surface area", "bioinformatics"]
+keywords = ["voronoi-tessellation", "surface-area", "molecules"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
