@@ -2,14 +2,14 @@
 name = "voronota"
 version = "0.1.0"
 edition = "2021"
-description = "Voronota is a tool for finding the vertices of the Voronoi diagram of balls"
+description = "Voronota-LT is an alternative version of Voronota for constructing tessellation-derived atomic contact areas and volumes."
 license = "MIT"
 readme = "README.md"
 categories = ["science"]
-homepage = "https://www.voronota.com"
+homepage = "https://www.voronota.com/expansion_lt"
 repository = "https://github.com/mlund/voronota-rs"
 authors = ["Kliment Olechnovic <kliment.olechnovic@bti.vu.lt>", "Mikael Lund <lyssky@icloud.com>"]
-keywords = ["voronoi-tessellation", "triangulation", "protein", "bioinformatics"]
+keywords = ["voronoi-tessellation", "triangulation", "bioinformatics"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
