@@ -8,15 +8,10 @@
 
 Like Voronota, Voronota-LT can compute contact areas derived from the additively weighted Voronoi tessellation, but the main increase in speed comes when utilizing a simpler, radical tessellation variant, also known as Laguerre-Laguerre tessellation or power diagram. This is the default tessellation variant in Voronota-LT. It considers radii of atoms together with the rolling probe radius to define radical planes as bisectors between atoms.
 
-## Usage
+## Example
 
-This crate provides a simplified interface to Voronota-LT and can added to existing Cargo-based projects with:
-
-~~~ console
-cargo add voronota
-~~~
-
-The following illustrates basic use and how to e.g. extract the solvent accessible surface area:
+The following illustrates basic use and how to e.g. calculate the total
+solvent accessible surface area:
 
 ~~~ rust
 use voronota::{Ball, RadicalTessellation};
@@ -30,6 +25,15 @@ assert_eq!(tessellation.balls.len(), 2);
 assert_eq!(tessellation.contacts.len(), 1);
 assert_eq!(tessellation.cells.len(), 2);
 
-let total_area: f64 = tessellation.cells.iter().map(|c| c.sas_area).sum();
-assert_eq!(total_area, 166.6300743464026);
+let area = tessellation.cells.iter().map(|c| c.sas_area).sum::<f64>();
+assert_eq!(area, 166.6300743464026);
 ~~~
+
+## Current Status
+
+- [x] Calculates contacts, surface areas and volumes.
+- [x] Support for periodic boundary conditions.
+- [x] Unit tests and examples.
+- [x] Bindings via the [`cxx` crate](https://crates.io/crates/cxx).
+- [ ] Partial update of positions.
+
