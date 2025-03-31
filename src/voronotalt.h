@@ -3,6 +3,7 @@
 #include <stdexcept>
 #include "rust/cxx.h"
 #include "voronota/src/voronotalt/voronotalt.h"
+#include "voronotalt/periodic_box.h"
 
 struct SimplePoint
 {
@@ -99,7 +100,9 @@ struct RadicalTessellation
 				corners[i].y = periodic_box_corners[i].y;
 				corners[i].z = periodic_box_corners[i].z;
 			}
-			voronotalt::RadicalTessellation::construct_full_tessellation(voronotalt::get_spheres_from_balls(balls, probe), corners, result);
+			const auto periodic_box = voronotalt::PeriodicBox::create_periodic_box_from_corners(corners);
+			const auto spheres = voronotalt::get_spheres_from_balls(balls, probe);
+			voronotalt::RadicalTessellation::construct_full_tessellation(spheres, periodic_box, result);
 		}
 
 		if(result.contacts_summaries.empty() || result.cells_summaries.empty())
