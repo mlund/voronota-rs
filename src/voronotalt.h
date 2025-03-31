@@ -1,9 +1,12 @@
 #pragma once
 
 #include <stdexcept>
+#include "interface.h"
 #include "rust/cxx.h"
 #include "voronota/src/voronotalt/voronotalt.h"
 #include "voronotalt/periodic_box.h"
+
+using TessellationVertex = voronotalt::RadicalTessellationContactConstruction::TessellationVertex;
 
 struct SimplePoint
 {
