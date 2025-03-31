@@ -62,6 +62,7 @@ struct Cell
 struct RadicalTessellation
 {
 	double probe;
+	bool with_tessellation_net = false;
 	rust::Vec<SimplePoint> periodic_box_corners;
 	rust::Vec<Ball> balls;
 	rust::Vec<Contact> contacts;
@@ -88,21 +89,22 @@ struct RadicalTessellation
 		}
 
 		voronotalt::RadicalTessellation::Result result;
+		const auto spheres = voronotalt::get_spheres_from_balls(balls, probe);
 		if (periodic_box_corners.empty()) {
-			voronotalt::RadicalTessellation::construct_full_tessellation(voronotalt::get_spheres_from_balls(balls, probe), result);
+		    const auto disabled_periodic_box = voronotalt::PeriodicBox();
+			voronotalt::RadicalTessellation::construct_full_tessellation(spheres, disabled_periodic_box, with_tessellation_net, result);
 		} else {
 			if (periodic_box_corners.size() != 2) {
 				throw std::runtime_error("Invalid periodic box corners");
 			}
 			std::vector<voronotalt::SimplePoint> corners(2);
-			for (std::size_t i = 0; i < 2; i++) {
+			for (std::size_t i = 0; i < corners.size(); i++) {
 				corners[i].x = periodic_box_corners[i].x;
 				corners[i].y = periodic_box_corners[i].y;
 				corners[i].z = periodic_box_corners[i].z;
 			}
 			const auto periodic_box = voronotalt::PeriodicBox::create_periodic_box_from_corners(corners);
-			const auto spheres = voronotalt::get_spheres_from_balls(balls, probe);
-			voronotalt::RadicalTessellation::construct_full_tessellation(spheres, periodic_box, result);
+			voronotalt::RadicalTessellation::construct_full_tessellation(spheres, periodic_box, with_tessellation_net, result);
 		}
 
 		if(result.contacts_summaries.empty() || result.cells_summaries.empty())
