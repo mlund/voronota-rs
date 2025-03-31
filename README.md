@@ -19,7 +19,7 @@ let balls = vec![
     Ball { x: 0.0, y: 0.0, z: 0.0, r: 2.0 },
     Ball { x: 1.0, y: 0.0, z: 0.0, r: 2.0 },
 ];
-let tessellation = RadicalTessellation::from_balls(1.4, &balls, None);
+let tessellation = RadicalTessellation::from_balls(1.4, &balls, None, false);
 
 assert_eq!(tessellation.balls.len(), 2);
 assert_eq!(tessellation.contacts.len(), 1);

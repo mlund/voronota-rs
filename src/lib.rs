@@ -17,7 +17,7 @@
 //!     Ball { x: 0.0, y: 0.0, z: 0.0, r: 2.0 },
 //!     Ball { x: 1.0, y: 0.0, z: 0.0, r: 2.0 },
 //! ];
-//! let tessellation = RadicalTessellation::from_balls(1.4, &balls, None);
+//! let tessellation = RadicalTessellation::from_balls(1.4, &balls, None, false);
 //!
 //! assert_eq!(tessellation.balls.len(), 2);
 //! assert_eq!(tessellation.contacts.len(), 1);
@@ -90,15 +90,18 @@ mod ffi {
         contacts: Vec<Contact>,
         /// List of cells (sas_area, volume, included)
         cells: Vec<Cell>,
+        /// Enable tessellation net (slower; default: false)
+        pub tessellation_net: bool,
     }
 
     unsafe extern "C++" {
         include!("voronota/src/interface.h");
-        fn from_balls(probe_radius: f64, balls: &Vec<Ball>) -> RadicalTessellation;
+        fn from_balls(probe_radius: f64, balls: &Vec<Ball>, with_net: bool) -> RadicalTessellation;
         fn from_balls_pbc(
             probe_radius: f64,
             balls: &Vec<Ball>,
             periodic_box_corners: &Vec<SimplePoint>,
+            with_net: bool,
         ) -> RadicalTessellation;
     }
 }
@@ -119,7 +122,7 @@ impl RadicalTessellation {
     ///    Ball { x: 0.0, y: 0.0, z: 0.0, r: 2.0 },
     ///    Ball { x: 1.0, y: 0.0, z: 0.0, r: 2.0 },
     /// ];
-    /// let tessellation = RadicalTessellation::from_balls(1.4, &balls, None);
+    /// let tessellation = RadicalTessellation::from_balls(1.4, &balls, None, false);
     /// let total_area: f64 = tessellation.cells.iter().map(|c| c.sas_area).sum();
     ///
     /// assert_eq!(tessellation.balls.len(), 2);
@@ -131,6 +134,7 @@ impl RadicalTessellation {
         probe_radius: f64,
         balls: &Vec<Ball>,
         periodic_box_corners: Option<[SimplePoint; 2]>,
+        with_net: bool,
     ) -> Self {
         match periodic_box_corners {
             Some(corners) => {
@@ -141,9 +145,10 @@ impl RadicalTessellation {
                     probe_radius,
                     balls,
                     &vec![corners[0].clone(), corners[1].clone()],
+                    with_net,
                 )
             }
-            None => ffi::from_balls(probe_radius, balls),
+            None => ffi::from_balls(probe_radius, balls, false),
         }
     }
 
@@ -221,7 +226,7 @@ mod tests {
                 r: 2.0,
             },
         ];
-        let tessellation = RadicalTessellation::from_balls(1.4, &balls, None);
+        let tessellation = RadicalTessellation::from_balls(1.4, &balls, None, false);
         assert_eq!(tessellation.balls.len(), 2);
         assert_eq!(tessellation.contacts.len(), 1);
         assert_eq!(tessellation.cells.len(), 2);

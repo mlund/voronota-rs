@@ -75,7 +75,7 @@ struct RadicalTessellation
 	{
 	}
 
-	RadicalTessellation(const rust::Vec<Ball>& balls, const rust::Vec<SimplePoint>& periodic_box_corners, double probe) : probe(probe), periodic_box_corners(periodic_box_corners), balls(balls)
+	RadicalTessellation(const rust::Vec<Ball>& balls, const rust::Vec<SimplePoint>& periodic_box_corners, double probe, bool with_net = false) : probe(probe), periodic_box_corners(periodic_box_corners), balls(balls), with_tessellation_net(with_net)
 	{
 		recompute(probe);
 	}
