@@ -62,11 +62,11 @@ struct Cell
 struct RadicalTessellation
 {
 	double probe;
-	bool with_tessellation_net = false;
 	rust::Vec<SimplePoint> periodic_box_corners;
 	rust::Vec<Ball> balls;
 	rust::Vec<Contact> contacts;
 	rust::Vec<Cell> cells;
+	bool with_tessellation_net = false;
 
 	RadicalTessellation() : probe(1.4)
 	{
