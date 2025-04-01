@@ -77,6 +77,14 @@ mod ffi {
         included: bool,
     }
 
+    #[derive(Debug, Default, PartialEq, Clone)]
+    struct TessellationVertex {
+        ids_of_spheres: [usize; 4],
+        position: SimplePoint,
+        dist_min: f64,
+        dist_max: f64,
+    }
+
     /// Radical tessellation with a probe radius, list of balls, contacts and cells.
     #[derive(Debug, Default, PartialEq, Clone)]
     struct RadicalTessellation {
@@ -90,6 +98,8 @@ mod ffi {
         contacts: Vec<Contact>,
         /// List of cells (sas_area, volume, included)
         cells: Vec<Cell>,
+        /// Tesselation vertices if `tessellation_net` is true
+        vertices: Vec<TessellationVertex>,
         /// Enable tessellation net (slower; default: false)
         pub tessellation_net: bool,
     }
@@ -148,7 +158,7 @@ impl RadicalTessellation {
                     with_net,
                 )
             }
-            None => ffi::from_balls(probe_radius, balls, false),
+            None => ffi::from_balls(probe_radius, balls, with_net),
         }
     }
 
@@ -264,5 +274,8 @@ mod tests {
             109.73583138989146,
             epsilon = 1e-6
         );
+
+        let tessellation = RadicalTessellation::from_balls(1.4, &balls, None, true);
+        assert_eq!(tessellation.vertices.len(), 0);
     }
 }

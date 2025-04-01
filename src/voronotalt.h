@@ -5,8 +5,7 @@
 #include "rust/cxx.h"
 #include "voronota/src/voronotalt/voronotalt.h"
 #include "voronotalt/periodic_box.h"
-
-using TessellationVertex = voronotalt::RadicalTessellationContactConstruction::TessellationVertex;
+#include <iostream>
 
 struct SimplePoint
 {
@@ -62,6 +61,14 @@ struct Cell
 	bool included;
 };
 
+struct TessellationVertex
+{
+	std::size_t ids_of_spheres[4];
+	SimplePoint position;
+	double dist_min;
+	double dist_max;
+};
+
 struct RadicalTessellation
 {
 	double probe;
@@ -69,13 +76,14 @@ struct RadicalTessellation
 	rust::Vec<Ball> balls;
 	rust::Vec<Contact> contacts;
 	rust::Vec<Cell> cells;
+	rust::Vec<TessellationVertex> vertices;
 	bool with_tessellation_net = false;
 
-	RadicalTessellation() : probe(1.4)
+	RadicalTessellation() : probe(1.4), with_tessellation_net(false)
 	{
 	}
 
-	RadicalTessellation(const rust::Vec<Ball>& balls, const rust::Vec<SimplePoint>& periodic_box_corners, double probe, bool with_net = false) : probe(probe), periodic_box_corners(periodic_box_corners), balls(balls), with_tessellation_net(with_net)
+	RadicalTessellation(const rust::Vec<Ball>& balls, const rust::Vec<SimplePoint>& periodic_box_corners, double probe, bool with_net) : probe(probe), periodic_box_corners(periodic_box_corners), balls(balls), with_tessellation_net(with_net)
 	{
 		recompute(probe);
 	}
@@ -136,6 +144,24 @@ struct RadicalTessellation
 		}
 		cells.reserve(temp_cells.size());
 		std::copy(temp_cells.begin(), temp_cells.end(), std::back_inserter(cells));
+
+		if (with_tessellation_net) {
+		    std::cout << "Num vertices = " << result.tessellation_net.tes_vertices.size() << std::endl;
+		    vertices.reserve(result.tessellation_net.tes_vertices.size());
+			for (const auto &vertex : result.tessellation_net.tes_vertices) {
+			    TessellationVertex tessellation_vertex;
+                tessellation_vertex.ids_of_spheres[0] = vertex.ids_of_spheres[0];
+                tessellation_vertex.ids_of_spheres[1] = vertex.ids_of_spheres[1];
+                tessellation_vertex.ids_of_spheres[2] = vertex.ids_of_spheres[2];
+                tessellation_vertex.ids_of_spheres[3] = vertex.ids_of_spheres[3];
+                tessellation_vertex.position.x = vertex.position.x;
+                tessellation_vertex.position.y = vertex.position.y;
+                tessellation_vertex.position.z = vertex.position.z;
+                tessellation_vertex.dist_min = vertex.dist_min;
+                tessellation_vertex.dist_max = vertex.dist_max;
+                vertices.emplace_back(tessellation_vertex);
+			}
+        }
 
 		return static_cast<int>(contacts.size());
 	}
