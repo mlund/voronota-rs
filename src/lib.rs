@@ -31,8 +31,6 @@
 #[cfg(test)]
 extern crate approx;
 
-use std::f64::consts::PI;
-
 #[cxx::bridge]
 mod ffi {
     /// Simple point with x, y and z coordinates.
@@ -162,6 +160,11 @@ impl RadicalTessellation {
         }
     }
 
+    /// Get list of cells
+    pub fn cells(&self) -> &[Cell] {
+        &self.cells
+    }
+
     /// Clear all balls, contacts and cells.
     pub fn clear(&mut self) {
         self.balls.clear();
@@ -175,21 +178,12 @@ impl RadicalTessellation {
     }
 
     /// Total contact area of a single particle given by its `index`
-    fn contact_area(&self, index: usize) -> f64 {
+    pub fn contact_area(&self, index: usize) -> f64 {
         self.contacts
             .iter()
             .filter(|&c| c.index_a == index as i32 || c.index_b == index as i32)
             .map(|contact| contact.area)
             .sum()
-    }
-
-    /// Available surface area of a single particle given by its `index`
-    ///
-    /// This is merely the total area of the particle minus the contact area.
-    pub fn available_area(&self, index: usize) -> f64 {
-        let radius = self.balls[index].r + self.probe;
-        let total_area = 4.0 * PI * radius.powi(2);
-        total_area - self.contact_area(index)
     }
 }
 
@@ -265,13 +259,13 @@ mod tests {
         );
 
         approx::assert_relative_eq!(
-            tessellation.available_area(0),
-            109.73583138989146,
+            tessellation.cells[0].sas_area,
+            83.31503717320129,
             epsilon = 1e-6
         );
         approx::assert_relative_eq!(
-            tessellation.available_area(1),
-            109.73583138989146,
+            tessellation.cells[1].sas_area,
+            83.31503717320129,
             epsilon = 1e-6
         );
 
