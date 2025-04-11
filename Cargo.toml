@@ -1,6 +1,6 @@
 [package]
 name = "voronota"
-version = "0.2.0"
+version = "0.3.0"
 edition = "2021"
 description = "Voronota-LT is an alternative version of Voronota for constructing tessellation-derived atomic contact areas and volumes."
 license = "MIT"
