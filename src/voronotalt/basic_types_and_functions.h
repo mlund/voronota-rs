@@ -40,11 +40,11 @@ struct SimplePoint
 	Float y;
 	Float z;
 
-	SimplePoint() noexcept : x(FLOATCONST(0.0)), y(FLOATCONST(0.0)), z(FLOATCONST(0.0))
+	inline SimplePoint() noexcept : x(FLOATCONST(0.0)), y(FLOATCONST(0.0)), z(FLOATCONST(0.0))
 	{
 	}
 
-	SimplePoint(const Float x, const Float y, const Float z) noexcept : x(x), y(y), z(z)
+	inline SimplePoint(const Float x, const Float y, const Float z) noexcept : x(x), y(y), z(z)
 	{
 	}
 };
@@ -54,15 +54,15 @@ struct SimpleSphere
 	SimplePoint p;
 	Float r;
 
-	SimpleSphere() noexcept : r(FLOATCONST(0.0))
+	inline SimpleSphere() noexcept : r(FLOATCONST(0.0))
 	{
 	}
 
-	SimpleSphere(const SimplePoint& p, const Float r) noexcept : p(p), r(r)
+	inline SimpleSphere(const SimplePoint& p, const Float r) noexcept : p(p), r(r)
 	{
 	}
 
-	SimpleSphere(const Float x, const Float y, const Float z, const Float r) noexcept : p(x, y, z), r(r)
+	inline SimpleSphere(const Float x, const Float y, const Float z, const Float r) noexcept : p(x, y, z), r(r)
 	{
 	}
 };
@@ -74,11 +74,11 @@ struct SimpleQuaternion
 	Float c;
 	Float d;
 
-	SimpleQuaternion(const Float a, const Float b, const Float c, const Float d) noexcept : a(a), b(b), c(c), d(d)
+	inline SimpleQuaternion(const Float a, const Float b, const Float c, const Float d) noexcept : a(a), b(b), c(c), d(d)
 	{
 	}
 
-	SimpleQuaternion(const Float a, const SimplePoint& p) noexcept : a(a), b(p.x), c(p.y), d(p.z)
+	inline SimpleQuaternion(const Float a, const SimplePoint& p) noexcept : a(a), b(p.x), c(p.y), d(p.z)
 	{
 	}
 };
@@ -88,15 +88,15 @@ struct ValuedID
 	Float value;
 	UnsignedInt index;
 
-	ValuedID() noexcept : value(FLOATCONST(0.0)), index(0)
+	inline ValuedID() noexcept : value(FLOATCONST(0.0)), index(0)
 	{
 	}
 
-	ValuedID(const Float value, const UnsignedInt index) noexcept : value(value), index(index)
+	inline ValuedID(const Float value, const UnsignedInt index) noexcept : value(value), index(index)
 	{
 	}
 
-	bool operator<(const ValuedID& cid) const noexcept
+	inline bool operator<(const ValuedID& cid) const noexcept
 	{
 		return (value<cid.value || (value==cid.value && index<cid.index));
 	}
