@@ -9,11 +9,11 @@
 
 struct SimplePoint
 {
-	SimplePoint() : x(0.0), y(0.0), z(0.0)
+	inline SimplePoint() : x(0.0), y(0.0), z(0.0)
 	{
 	}
 
-	SimplePoint(double x, double y, double z) : x(x), y(y), z(z)
+	inline SimplePoint(double x, double y, double z) : x(x), y(y), z(z)
 	{
 	}
 
@@ -24,11 +24,11 @@ struct SimplePoint
 
 struct Ball
 {
-	Ball() : x(0.0), y(0.0), z(0.0), r(0.0)
+	inline Ball() : x(0.0), y(0.0), z(0.0), r(0.0)
 	{
 	}
 
-	Ball(double x, double y, double z, double r) : x(x), y(y), z(z), r(r)
+	inline Ball(double x, double y, double z, double r) : x(x), y(y), z(z), r(r)
 	{
 	}
 
@@ -40,7 +40,7 @@ struct Ball
 
 struct Contact
 {
-	Contact() : index_a(0), index_b(0), area(0.0), arc_length(0.0)
+	inline Contact() : index_a(0), index_b(0), area(0.0), arc_length(0.0)
 	{
 	}
 
@@ -52,7 +52,7 @@ struct Contact
 
 struct Cell
 {
-	Cell() : sas_area(0.0), volume(0.0), included(false)
+	inline Cell() : sas_area(0.0), volume(0.0), included(false)
 	{
 	}
 
@@ -79,16 +79,16 @@ struct RadicalTessellation
 	rust::Vec<TessellationVertex> vertices;
 	bool with_tessellation_net = false;
 
-	RadicalTessellation() : probe(1.4), with_tessellation_net(false)
+	inline RadicalTessellation() : probe(1.4), with_tessellation_net(false)
 	{
 	}
 
-	RadicalTessellation(const rust::Vec<Ball>& balls, const rust::Vec<SimplePoint>& periodic_box_corners, double probe, bool with_net) : probe(probe), periodic_box_corners(periodic_box_corners), balls(balls), with_tessellation_net(with_net)
+	inline RadicalTessellation(const rust::Vec<Ball>& balls, const rust::Vec<SimplePoint>& periodic_box_corners, double probe, bool with_net) : probe(probe), periodic_box_corners(periodic_box_corners), balls(balls), with_tessellation_net(with_net)
 	{
 		recompute(probe);
 	}
 
-	int recompute(const double new_probe)
+	inline int recompute(const double new_probe)
 	{
 		probe=new_probe;
 		contacts.clear();
