@@ -173,7 +173,7 @@ impl RadicalTessellation {
     }
 
     /// True if there are no balls.
-    pub fn is_empty(&self) -> bool {
+    pub const fn is_empty(&self) -> bool {
         self.balls.is_empty()
     }
 
@@ -191,7 +191,7 @@ pub use ffi::{Ball, Cell, Contact, RadicalTessellation, SimplePoint};
 
 impl From<[f64; 3]> for SimplePoint {
     fn from(data: [f64; 3]) -> Self {
-        SimplePoint {
+        Self {
             x: data[0],
             y: data[1],
             z: data[2],
@@ -201,7 +201,7 @@ impl From<[f64; 3]> for SimplePoint {
 
 impl From<[f64; 4]> for Ball {
     fn from(data: [f64; 4]) -> Self {
-        Ball {
+        Self {
             x: data[0],
             y: data[1],
             z: data[2],
