@@ -17,7 +17,7 @@
 //!     Ball { x: 0.0, y: 0.0, z: 0.0, r: 2.0 },
 //!     Ball { x: 1.0, y: 0.0, z: 0.0, r: 2.0 },
 //! ];
-//! let tessellation = RadicalTessellation::from_balls(1.4, &balls, None, false);
+//! let tessellation = RadicalTessellation::from_balls(1.4, &balls, None, None, false);
 //!
 //! assert_eq!(tessellation.balls.len(), 2);
 //! assert_eq!(tessellation.contacts.len(), 1);
@@ -104,7 +104,12 @@ mod ffi {
 
     unsafe extern "C++" {
         include!("voronota/src/interface.h");
-        fn from_balls(probe_radius: f64, balls: &Vec<Ball>, with_net: bool) -> RadicalTessellation;
+        fn from_balls(
+            probe_radius: f64,
+            balls: &Vec<Ball>,
+            with_net: bool,
+            grouping_of_spheres: &Vec<i32>,
+        ) -> RadicalTessellation;
         fn from_balls_pbc(
             probe_radius: f64,
             balls: &Vec<Ball>,
@@ -130,7 +135,7 @@ impl RadicalTessellation {
     ///    Ball { x: 0.0, y: 0.0, z: 0.0, r: 2.0 },
     ///    Ball { x: 1.0, y: 0.0, z: 0.0, r: 2.0 },
     /// ];
-    /// let tessellation = RadicalTessellation::from_balls(1.4, &balls, None, false);
+    /// let tessellation = RadicalTessellation::from_balls(1.4, &balls, None, None, false);
     /// let total_area: f64 = tessellation.cells.iter().map(|c| c.sas_area).sum();
     ///
     /// assert_eq!(tessellation.balls.len(), 2);
@@ -142,8 +147,14 @@ impl RadicalTessellation {
         probe_radius: f64,
         balls: &Vec<Ball>,
         periodic_box_corners: Option<[SimplePoint; 2]>,
+        grouping_of_spheres: Option<Vec<isize>>,
         with_net: bool,
     ) -> Self {
+        let grouping_of_spheres = grouping_of_spheres
+            .unwrap_or_default()
+            .into_iter()
+            .map(|x| x as i32)
+            .collect();
         match periodic_box_corners {
             Some(corners) => {
                 assert!(corners[0].x < corners[1].x);
@@ -156,7 +167,7 @@ impl RadicalTessellation {
                     with_net,
                 )
             }
-            None => ffi::from_balls(probe_radius, balls, with_net),
+            None => ffi::from_balls(probe_radius, balls, with_net, &grouping_of_spheres),
         }
     }
 
@@ -230,7 +241,7 @@ mod tests {
                 r: 2.0,
             },
         ];
-        let tessellation = RadicalTessellation::from_balls(1.4, &balls, None, false);
+        let tessellation = RadicalTessellation::from_balls(1.4, &balls, None, None, false);
         assert_eq!(tessellation.balls.len(), 2);
         assert_eq!(tessellation.contacts.len(), 1);
         assert_eq!(tessellation.cells.len(), 2);
@@ -269,7 +280,60 @@ mod tests {
             epsilon = 1e-6
         );
 
-        let tessellation = RadicalTessellation::from_balls(1.4, &balls, None, true);
+        let tessellation = RadicalTessellation::from_balls(1.4, &balls, None, None, true);
         assert_eq!(tessellation.vertices.len(), 0);
+    }
+
+    // Test with grouping_of_spheres
+    #[test]
+    fn test_from_balls_with_grouping() {
+        let balls = vec![
+            Ball {
+                x: 0.0,
+                y: 0.0,
+                z: 0.0,
+                r: 1.0,
+            },
+            Ball {
+                x: 1.0,
+                y: 0.0,
+                z: 0.0,
+                r: 1.0,
+            },
+            Ball {
+                x: 2.0,
+                y: 0.0,
+                z: 0.0,
+                r: 1.3,
+            },
+        ];
+        // Three particles in three groups -> two contacts (12, 23)
+        let grouping_of_spheres = vec![0, 1, 2];
+        let tessellation =
+            RadicalTessellation::from_balls(1.4, &balls, None, Some(grouping_of_spheres), true);
+        assert_eq!(tessellation.balls.len(), 3);
+        assert_eq!(tessellation.contacts.len(), 2);
+        approx::assert_relative_eq!(
+            tessellation.contacts[0].area,
+            17.310175521279756,
+            epsilon = 1e-6
+        );
+        approx::assert_relative_eq!(
+            tessellation.contacts[1].area,
+            17.87495534057886,
+            epsilon = 1e-6
+        );
+
+        // Three particles in two groups -> one contacts (23)
+        let grouping_of_spheres = vec![0, 0, 1];
+        let tessellation =
+            RadicalTessellation::from_balls(1.4, &balls, None, Some(grouping_of_spheres), true);
+        assert_eq!(tessellation.balls.len(), 3);
+        assert_eq!(tessellation.contacts.len(), 1);
+        approx::assert_relative_eq!(
+            tessellation.contacts[0].area,
+            17.87495534057886,
+            epsilon = 1e-6
+        );
     }
 }

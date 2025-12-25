@@ -77,13 +77,14 @@ struct RadicalTessellation
 	rust::Vec<Contact> contacts;
 	rust::Vec<Cell> cells;
 	rust::Vec<TessellationVertex> vertices;
+	rust::Vec<int> grouping_of_spheres;
 	bool with_tessellation_net = false;
 
 	inline RadicalTessellation() : probe(1.4), with_tessellation_net(false)
 	{
 	}
 
-	inline RadicalTessellation(const rust::Vec<Ball>& balls, const rust::Vec<SimplePoint>& periodic_box_corners, double probe, bool with_net) : probe(probe), periodic_box_corners(periodic_box_corners), balls(balls), with_tessellation_net(with_net)
+	inline RadicalTessellation(const rust::Vec<Ball>& balls, const rust::Vec<SimplePoint>& periodic_box_corners, double probe, bool with_net, const rust::Vec<int>& grouping_of_spheres) : probe(probe), periodic_box_corners(periodic_box_corners), balls(balls), grouping_of_spheres(grouping_of_spheres), with_tessellation_net(with_net)
 	{
 		recompute(probe);
 	}
@@ -102,8 +103,13 @@ struct RadicalTessellation
 		voronotalt::RadicalTessellation::Result result;
 		const auto spheres = voronotalt::get_spheres_from_balls(balls, probe);
 		if (periodic_box_corners.empty()) {
-		    const auto disabled_periodic_box = voronotalt::PeriodicBox();
-			voronotalt::RadicalTessellation::construct_full_tessellation(spheres, disabled_periodic_box, with_tessellation_net, result);
+			if (grouping_of_spheres.empty()) {
+			    const auto disabled_periodic_box = voronotalt::PeriodicBox();
+			    voronotalt::RadicalTessellation::construct_full_tessellation(spheres, disabled_periodic_box, with_tessellation_net, result);
+			} else {
+				const auto groups = std::vector<int>(grouping_of_spheres.begin(), grouping_of_spheres.end());
+				voronotalt::RadicalTessellation::construct_full_tessellation(spheres, groups, result);
+			}
 		} else {
 			if (periodic_box_corners.size() != 2) {
 				throw std::runtime_error("Invalid periodic box corners");
@@ -118,7 +124,7 @@ struct RadicalTessellation
 			voronotalt::RadicalTessellation::construct_full_tessellation(spheres, periodic_box, with_tessellation_net, result);
 		}
 
-		if(result.contacts_summaries.empty() || result.cells_summaries.empty())
+		if(result.contacts_summaries.empty() && result.cells_summaries.empty())
 		{
 			return 0;
 		}
